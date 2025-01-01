@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@duckdb/duckdb-wasm": "^1.28.1",
-    "apache-arrow": "^11.0.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.1",
     "@mui/material": "^5.14.5",
