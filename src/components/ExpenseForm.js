@@ -29,7 +29,8 @@ const currencies = [
 const frequencies = [
   'Monthly',
   'Quarterly',
-  'Fortnightly'
+  'Fortnightly',
+  'Half Yearly'
 ];
 
 function ExpenseForm({ onAddExpense }) {
@@ -114,6 +115,19 @@ function ExpenseForm({ onAddExpense }) {
                 currency: formData.currency,
                 month: months[monthIndex],
                 id: Date.now() + i * 2 + 1
+              });
+            }
+            break;
+          case 'Half Yearly':
+            for (let i = 0; i < 12; i += 6) {
+              const monthIndex = (startMonthIndex + i) % 12;
+              expensesToAdd.push({
+                category,
+                biller: formData.biller || 'Not Specified',
+                amount: parseFloat(formData.amount),
+                currency: formData.currency,
+                month: months[monthIndex],
+                id: Date.now() + i
               });
             }
             break;
