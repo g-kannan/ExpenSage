@@ -23,7 +23,22 @@ function TableView({ expenses, onReset }) {
     setOrderBy(property);
   };
 
+  const monthOrder = {
+    'JAN': 0, 'FEB': 1, 'MAR': 2, 'APR': 3, 'MAY': 4, 'JUN': 5,
+    'JUL': 6, 'AUG': 7, 'SEP': 8, 'OCT': 9, 'NOV': 10, 'DEC': 11
+  };
+
+  const getMonthValue = (month) => {
+    return monthOrder[month.toUpperCase()] ?? -1;
+  };
+
   const sortedExpenses = [...expenses].sort((a, b) => {
+    if (orderBy === 'month') {
+      const monthA = getMonthValue(a[orderBy]);
+      const monthB = getMonthValue(b[orderBy]);
+      return order === 'asc' ? monthA - monthB : monthB - monthA;
+    }
+    
     if (a[orderBy] < b[orderBy]) {
       return order === 'asc' ? -1 : 1;
     }
