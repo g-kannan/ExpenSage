@@ -9,8 +9,6 @@ import {
   Paper,
   Button,
   Box,
-  Card,
-  CardContent,
   Typography,
   Grid,
   TableSortLabel
@@ -47,16 +45,6 @@ function TableView({ expenses, onReset }) {
     return `${currencySymbol}${Number(amount).toFixed(2)}`;
   };
 
-  const calculateYearlyTotals = () => {
-    return expenses.reduce((acc, { amount, currency }) => {
-      if (!acc[currency]) {
-        acc[currency] = 0;
-      }
-      acc[currency] += parseFloat(amount) || 0;
-      return acc;
-    }, {});
-  };
-
   const handleExport = () => {
     const headers = ['Month', 'Category', 'Biller', 'Amount', 'Currency'];
     const csvData = expenses.map(expense => [
@@ -83,24 +71,8 @@ function TableView({ expenses, onReset }) {
     document.body.removeChild(link);
   };
 
-  const yearlyTotals = calculateYearlyTotals();
-
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {/* Yearly Totals Card */}
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Yearly Total
-          </Typography>
-          {Object.entries(yearlyTotals).map(([currency, total], idx) => (
-            <Typography key={idx} variant="body1">
-              {formatAmount(total, currency)}
-            </Typography>
-          ))}
-        </CardContent>
-      </Card>
-
       {/* Action Buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
         <Button 
