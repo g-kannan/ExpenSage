@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -12,10 +12,30 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid
+  Grid,
+  TableSortLabel
 } from '@mui/material';
 
 function TableView({ expenses, onReset }) {
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('month');
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const sortedExpenses = [...expenses].sort((a, b) => {
+    if (a[orderBy] < b[orderBy]) {
+      return order === 'asc' ? -1 : 1;
+    }
+    if (a[orderBy] > b[orderBy]) {
+      return order === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
   const formatAmount = (amount, currency) => {
     const currencySymbol = {
       'INR': '₹',
@@ -71,7 +91,7 @@ function TableView({ expenses, onReset }) {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Yearly Totals
+            Yearly Total
           </Typography>
           {Object.entries(yearlyTotals).map(([currency, total], idx) => (
             <Typography key={idx} variant="body1">
@@ -101,19 +121,25 @@ function TableView({ expenses, onReset }) {
       </Box>
 
       {/* Expenses Table */}
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>Month</TableCell>
-              <TableCell>Category</TableCell>
-              <TableCell>Biller</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell>Currency</TableCell>
+              {['month', 'category', 'biller', 'amount', 'currency'].map((headCell) => (
+                <TableCell key={headCell} sortDirection={orderBy === headCell ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === headCell}
+                    direction={orderBy === headCell ? order : 'asc'}
+                    onClick={() => handleRequestSort(headCell)}
+                  >
+                    {headCell.charAt(0).toUpperCase() + headCell.slice(1)}
+                  </TableSortLabel>
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {expenses.map((expense, index) => (
+            {sortedExpenses.map((expense, index) => (
               <TableRow key={index}>
                 <TableCell>{expense.month}</TableCell>
                 <TableCell>{expense.category}</TableCell>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Box, Typography, Divider } from '@mui/material';
+import { Container, Box, Typography, Divider, img } from '@mui/material';
 import ExpenseForm from './components/ExpenseForm';
 import CalendarView from './components/CalendarView';
 import TableView from './components/TableView';
+import logo from './assets/ExpenSage_logo.png';
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -19,9 +20,9 @@ function App() {
 
   return (
     <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 4 }}>
-        ExpenSage
-      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+        <img src={logo} alt="ExpenSage Logo" style={{ height: '160px', width: 'auto' }} />
+      </Box>
       
       <Box sx={{ mb: 4 }}>
         <ExpenseForm onAddExpense={handleAddExpense} />

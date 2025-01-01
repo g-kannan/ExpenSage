@@ -12,7 +12,8 @@ const categories = [
   'Insurance',
   'Groceries',
   'Entertainment',
-  'Other'
+  'Other',
+  'Custom'
 ];
 
 const currencies = [
@@ -32,6 +33,7 @@ function ExpenseForm({ onAddExpense }) {
   const [formData, setFormData] = useState({
     month: '',
     category: '',
+    customCategory: '',
     biller: '',
     amount: '',
     currency: 'INR',
@@ -57,7 +59,9 @@ function ExpenseForm({ onAddExpense }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.month && formData.category && formData.amount) {
+    if (formData.month && (formData.category || formData.customCategory) && formData.amount) {
+      const category = formData.category === 'Custom' ? formData.customCategory : formData.category;
+
       if (formData.recurring) {
         const startMonthIndex = months.indexOf(formData.month);
         const expensesToAdd = [];
@@ -67,7 +71,7 @@ function ExpenseForm({ onAddExpense }) {
             for (let i = 0; i < 12; i++) {
               const monthIndex = (startMonthIndex + i) % 12;
               expensesToAdd.push({
-                category: formData.category,
+                category,
                 biller: formData.biller || 'Not Specified',
                 amount: parseFloat(formData.amount),
                 currency: formData.currency,
@@ -80,7 +84,7 @@ function ExpenseForm({ onAddExpense }) {
             for (let i = 0; i < 12; i += 3) {
               const monthIndex = (startMonthIndex + i) % 12;
               expensesToAdd.push({
-                category: formData.category,
+                category,
                 biller: formData.biller || 'Not Specified',
                 amount: parseFloat(formData.amount),
                 currency: formData.currency,
@@ -93,7 +97,7 @@ function ExpenseForm({ onAddExpense }) {
             for (let i = 0; i < 12; i++) {
               const monthIndex = (startMonthIndex + i) % 12;
               expensesToAdd.push({
-                category: formData.category,
+                category,
                 biller: formData.biller || 'Not Specified',
                 amount: parseFloat(formData.amount) / 2,
                 currency: formData.currency,
@@ -101,7 +105,7 @@ function ExpenseForm({ onAddExpense }) {
                 id: Date.now() + i * 2
               });
               expensesToAdd.push({
-                category: formData.category,
+                category,
                 biller: formData.biller || 'Not Specified',
                 amount: parseFloat(formData.amount) / 2,
                 currency: formData.currency,
@@ -118,6 +122,7 @@ function ExpenseForm({ onAddExpense }) {
       } else {
         onAddExpense({
           ...formData,
+          category,
           id: Date.now(),
           amount: parseFloat(formData.amount),
           biller: formData.biller || 'Not Specified'
@@ -127,6 +132,7 @@ function ExpenseForm({ onAddExpense }) {
       setFormData({
         month: '',
         category: '',
+        customCategory: '',
         biller: '',
         amount: '',
         currency: 'INR',
@@ -176,6 +182,17 @@ function ExpenseForm({ onAddExpense }) {
           <MenuItem key={category} value={category}>{category}</MenuItem>
         ))}
       </TextField>
+
+      {formData.category === 'Custom' && (
+        <TextField
+          label="Custom Category"
+          name="customCategory"
+          value={formData.customCategory}
+          onChange={handleChange}
+          size="small"
+          sx={{ width: 130 }}
+        />
+      )}
 
       <TextField
         label="Biller"
