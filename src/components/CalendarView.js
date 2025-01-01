@@ -46,6 +46,10 @@ function CalendarView({ expenses }) {
     calculateTotals();
   }, [expenses]);
 
+  const formatNumber = (number) => {
+    return number.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+  };
+
   const formatAmount = (amount, currency) => {
     const currencySymbol = {
       'INR': '₹',
@@ -54,7 +58,7 @@ function CalendarView({ expenses }) {
       'GBP': '£'
     }[currency] || currency;
     
-    return `${currencySymbol}${Number(amount).toFixed(2)}`;
+    return `${currencySymbol}${formatNumber(amount)}`;
   };
 
   const getBackgroundColor = (total) => {
@@ -64,42 +68,38 @@ function CalendarView({ expenses }) {
   };
 
   return (
-    <Box sx={{ display: 'grid', gridTemplateRows: 'repeat(4, 1fr)', gap: 2 }}>
-      {months.map((row, rowIndex) => (
-        <Box key={rowIndex} sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 2 }}>
-          {row.map((month) => {
-            const monthTotals = monthlyTotals[month] || {};
-            const totalAmount = Object.values(monthTotals).reduce((sum, curr) => sum + curr, 0);
+    <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 2 }}>
+      {months.flat().map((month) => {
+        const monthTotals = monthlyTotals[month] || {};
+        const totalAmount = Object.values(monthTotals).reduce((sum, curr) => sum + curr, 0);
+        
+        return (
+          <Paper
+            key={month}
+            sx={{
+              p: 2,
+              height: '108px',
+              overflow: 'auto',
+              backgroundColor: getBackgroundColor(totalAmount),
+              transition: 'background-color 0.3s ease'
+            }}
+          >
+            <Typography variant="h6" gutterBottom>{month}</Typography>
             
-            return (
-              <Paper
-                key={month}
-                sx={{
-                  p: 2,
-                  height: '180px',
-                  overflow: 'auto',
-                  backgroundColor: getBackgroundColor(totalAmount),
-                  transition: 'background-color 0.3s ease'
-                }}
-              >
-                <Typography variant="h6" gutterBottom>{month}</Typography>
-                
-                {Object.entries(monthTotals).map(([currency, total], idx) => (
-                  <Typography key={idx} variant="body2" sx={{ color: 'text.primary', mt: 1 }}>
-                    {formatAmount(total, currency)}
-                  </Typography>
-                ))}
-                
-                {Object.keys(monthTotals).length === 0 && (
-                  <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
-                    No expenses
-                  </Typography>
-                )}
-              </Paper>
-            );
-          })}
-        </Box>
-      ))}
+            {Object.entries(monthTotals).map(([currency, total], idx) => (
+              <Typography key={idx} variant="body2" sx={{ color: 'text.primary', mt: 1 }}>
+                {formatAmount(total, currency)}
+              </Typography>
+            ))}
+            
+            {Object.keys(monthTotals).length === 0 && (
+              <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
+                No expenses
+              </Typography>
+            )}
+          </Paper>
+        );
+      })}
     </Box>
   );
 }
