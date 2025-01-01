@@ -38,6 +38,11 @@ function App() {
           <TableView expenses={expenses} onReset={handleReset} />
         </Box>
       </Box>
+      <Box sx={{ mt: 4, py: 2, borderTop: '1px solid #ddd', display: 'flex', justifyContent: 'center', gap: 4 }}>
+        <a href="https://github.com/g-kannan/ExpenSage" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/in/kannan-g-212242111/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="http://flaticon.com/" target="_blank" rel="noopener noreferrer">Icon Credits: Flaticon.com</a>
+      </Box>
     </Container>
   );
 }
