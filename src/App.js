@@ -42,7 +42,7 @@ function App() {
   return (
     <Container maxWidth="lg">
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-        <img src={logo} alt="ExpenSage Logo" style={{ height: '160px', width: 'auto' }} />
+        <img src={logo} alt="ExpenSage Logo" style={{ height: '136px', width: 'auto' }} />
       </Box>
       <Box sx={{ mb: 4 }}>
         <ExpenseForm onAddExpense={handleAddExpense} />
