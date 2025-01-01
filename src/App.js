@@ -11,6 +11,10 @@ function App() {
     setExpenses([...expenses, expense]);
   };
 
+  const handleReset = () => {
+    setExpenses([]);
+  };
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 4 }}>
@@ -28,7 +32,7 @@ function App() {
         </Box>
         <Box>
           <Typography variant="h5" gutterBottom>Table View</Typography>
-          <TableView expenses={expenses} />
+          <TableView expenses={expenses} onReset={handleReset} />
         </Box>
       </Box>
     </Container>

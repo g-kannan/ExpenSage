@@ -8,10 +8,14 @@ import {
   TableRow,
   Paper,
   Button,
-  Box
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Grid
 } from '@mui/material';
 
-function TableView({ expenses }) {
+function TableView({ expenses, onReset }) {
   const formatAmount = (amount, currency) => {
     const currencySymbol = {
       'INR': '₹',
@@ -20,11 +24,20 @@ function TableView({ expenses }) {
       'GBP': '£'
     }[currency] || currency;
     
-    return `${currencySymbol}${amount.toFixed(2)}`;
+    return `${currencySymbol}${Number(amount).toFixed(2)}`;
+  };
+
+  const calculateYearlyTotals = () => {
+    return expenses.reduce((acc, { amount, currency }) => {
+      if (!acc[currency]) {
+        acc[currency] = 0;
+      }
+      acc[currency] += parseFloat(amount) || 0;
+      return acc;
+    }, {});
   };
 
   const handleExport = () => {
-    // Convert expenses to CSV format
     const headers = ['Month', 'Category', 'Biller', 'Amount', 'Currency'];
     const csvData = expenses.map(expense => [
       expense.month,
@@ -34,13 +47,11 @@ function TableView({ expenses }) {
       expense.currency
     ]);
 
-    // Create CSV content
     const csvContent = [
       headers.join(','),
       ...csvData.map(row => row.join(','))
     ].join('\n');
 
-    // Create and trigger download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -52,9 +63,33 @@ function TableView({ expenses }) {
     document.body.removeChild(link);
   };
 
+  const yearlyTotals = calculateYearlyTotals();
+
   return (
-    <Box>
-      <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {/* Yearly Totals Card */}
+      <Card>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Yearly Totals
+          </Typography>
+          {Object.entries(yearlyTotals).map(([currency, total], idx) => (
+            <Typography key={idx} variant="body1">
+              {formatAmount(total, currency)}
+            </Typography>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Action Buttons */}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+        <Button 
+          variant="outlined" 
+          color="error" 
+          onClick={onReset}
+        >
+          Reset Data
+        </Button>
         <Button 
           variant="contained" 
           color="primary" 
@@ -64,6 +99,8 @@ function TableView({ expenses }) {
           Export to CSV
         </Button>
       </Box>
+
+      {/* Expenses Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -76,8 +113,8 @@ function TableView({ expenses }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {expenses.map((expense) => (
-              <TableRow key={expense.id}>
+            {expenses.map((expense, index) => (
+              <TableRow key={index}>
                 <TableCell>{expense.month}</TableCell>
                 <TableCell>{expense.category}</TableCell>
                 <TableCell>{expense.biller}</TableCell>

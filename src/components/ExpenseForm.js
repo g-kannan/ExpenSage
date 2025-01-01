@@ -59,79 +59,86 @@ function ExpenseForm({ onAddExpense }) {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', gap: 2 }}>
+    <Box 
+      component="form" 
+      onSubmit={handleSubmit} 
+      sx={{ 
+        display: 'flex', 
+        gap: 2,
+        flexWrap: 'wrap',
+        alignItems: 'center'
+      }}
+    >
       <TextField
         select
+        label="Month *"
         name="month"
-        label="Month"
         value={formData.month}
         onChange={handleChange}
         required
-        sx={{ minWidth: 120 }}
+        size="small"
+        sx={{ width: 100 }}
       >
         {months.map(month => (
-          <MenuItem key={month} value={month}>
-            {month}
-          </MenuItem>
+          <MenuItem key={month} value={month}>{month}</MenuItem>
         ))}
       </TextField>
 
       <TextField
         select
+        label="Category *"
         name="category"
-        label="Category"
         value={formData.category}
         onChange={handleChange}
         required
-        sx={{ minWidth: 150 }}
+        size="small"
+        sx={{ width: 130 }}
       >
         {categories.map(category => (
-          <MenuItem key={category} value={category}>
-            {category}
-          </MenuItem>
+          <MenuItem key={category} value={category}>{category}</MenuItem>
         ))}
       </TextField>
 
       <TextField
+        label="Biller"
         name="biller"
-        label="Biller (Optional)"
         value={formData.biller}
         onChange={handleChange}
+        size="small"
+        sx={{ width: 150 }}
       />
 
       <TextField
         select
+        label="Currency *"
         name="currency"
-        label="Currency"
         value={formData.currency}
         onChange={handleChange}
         required
-        sx={{ minWidth: 100 }}
+        size="small"
+        sx={{ width: 100 }}
       >
-        {currencies.map(currency => (
-          <MenuItem key={currency.code} value={currency.code}>
-            {currency.code} ({currency.symbol})
-          </MenuItem>
+        {currencies.map(({ code, symbol }) => (
+          <MenuItem key={code} value={code}>{symbol} {code}</MenuItem>
         ))}
       </TextField>
 
       <TextField
+        label="Amount *"
         name="amount"
-        label="Amount"
         type="number"
         value={formData.amount}
         onChange={handleChange}
         required
-        InputProps={{
-          startAdornment: currencies.find(c => c.code === formData.currency)?.symbol
-        }}
+        size="small"
+        sx={{ width: 120 }}
       />
 
       <Button
-        type="submit"
         variant="contained"
         color="primary"
-        sx={{ minWidth: 100 }}
+        type="submit"
+        size="medium"
       >
         Add
       </Button>
