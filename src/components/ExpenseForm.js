@@ -12,6 +12,9 @@ const categories = [
   'Insurance',
   'Groceries',
   'Entertainment',
+  'Gas',
+  'Internet',
+  'Phone',
   'Other',
   'Custom'
 ];
