@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Box, Typography } from '@mui/material';
+import { Container, Box, Typography, Divider } from '@mui/material';
 import ExpenseForm from './components/ExpenseForm';
 import CalendarView from './components/CalendarView';
 import TableView from './components/TableView';
@@ -7,8 +7,10 @@ import TableView from './components/TableView';
 function App() {
   const [expenses, setExpenses] = useState([]);
 
-  const handleAddExpense = (expense) => {
-    setExpenses([...expenses, expense]);
+  const handleAddExpense = (newExpenses) => {
+    // Ensure newExpenses is an array
+    const expensesArray = Array.isArray(newExpenses) ? newExpenses : [newExpenses];
+    setExpenses((prevExpenses) => [...prevExpenses, ...expensesArray]);
   };
 
   const handleReset = () => {

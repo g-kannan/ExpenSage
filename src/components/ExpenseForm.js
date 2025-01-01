@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, MenuItem } from '@mui/material';
+import { Box, TextField, Button, MenuItem, FormControlLabel, Checkbox } from '@mui/material';
 
 const months = [
   'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
@@ -22,13 +22,21 @@ const currencies = [
   { code: 'GBP', symbol: '£' }
 ];
 
+const frequencies = [
+  'Monthly',
+  'Quarterly',
+  'Fortnightly'
+];
+
 function ExpenseForm({ onAddExpense }) {
   const [formData, setFormData] = useState({
     month: '',
     category: '',
     biller: '',
     amount: '',
-    currency: 'INR'
+    currency: 'INR',
+    recurring: false,
+    frequency: ''
   });
 
   const handleChange = (e) => {
@@ -39,21 +47,91 @@ function ExpenseForm({ onAddExpense }) {
     }));
   };
 
+  const handleRecurringChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      recurring: e.target.checked,
+      frequency: e.target.checked ? 'Monthly' : ''
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.month && formData.category && formData.amount) {
-      onAddExpense({
-        ...formData,
-        id: Date.now(),
-        amount: parseFloat(formData.amount),
-        biller: formData.biller || 'Not Specified'
-      });
+      if (formData.recurring) {
+        const startMonthIndex = months.indexOf(formData.month);
+        const expensesToAdd = [];
+
+        switch (formData.frequency) {
+          case 'Monthly':
+            for (let i = 0; i < 12; i++) {
+              const monthIndex = (startMonthIndex + i) % 12;
+              expensesToAdd.push({
+                category: formData.category,
+                biller: formData.biller || 'Not Specified',
+                amount: parseFloat(formData.amount),
+                currency: formData.currency,
+                month: months[monthIndex],
+                id: Date.now() + i
+              });
+            }
+            break;
+          case 'Quarterly':
+            for (let i = 0; i < 12; i += 3) {
+              const monthIndex = (startMonthIndex + i) % 12;
+              expensesToAdd.push({
+                category: formData.category,
+                biller: formData.biller || 'Not Specified',
+                amount: parseFloat(formData.amount),
+                currency: formData.currency,
+                month: months[monthIndex],
+                id: Date.now() + i
+              });
+            }
+            break;
+          case 'Fortnightly':
+            for (let i = 0; i < 12; i++) {
+              const monthIndex = (startMonthIndex + i) % 12;
+              expensesToAdd.push({
+                category: formData.category,
+                biller: formData.biller || 'Not Specified',
+                amount: parseFloat(formData.amount) / 2,
+                currency: formData.currency,
+                month: months[monthIndex],
+                id: Date.now() + i * 2
+              });
+              expensesToAdd.push({
+                category: formData.category,
+                biller: formData.biller || 'Not Specified',
+                amount: parseFloat(formData.amount) / 2,
+                currency: formData.currency,
+                month: months[monthIndex],
+                id: Date.now() + i * 2 + 1
+              });
+            }
+            break;
+          default:
+            break;
+        }
+
+        onAddExpense(expensesToAdd);
+      } else {
+        onAddExpense({
+          ...formData,
+          id: Date.now(),
+          amount: parseFloat(formData.amount),
+          biller: formData.biller || 'Not Specified'
+        });
+      }
+
       setFormData({
         month: '',
         category: '',
         biller: '',
         amount: '',
-        currency: 'INR'
+        currency: 'INR',
+        recurring: false,
+        frequency: ''
       });
     }
   };
@@ -133,6 +211,33 @@ function ExpenseForm({ onAddExpense }) {
         size="small"
         sx={{ width: 120 }}
       />
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={formData.recurring}
+            onChange={handleRecurringChange}
+            name="recurring"
+          />
+        }
+        label="Recurring"
+      />
+
+      {formData.recurring && (
+        <TextField
+          select
+          label="Frequency"
+          name="frequency"
+          value={formData.frequency}
+          onChange={handleChange}
+          size="small"
+          sx={{ width: 130 }}
+        >
+          {frequencies.map(frequency => (
+            <MenuItem key={frequency} value={frequency}>{frequency}</MenuItem>
+          ))}
+        </TextField>
+      )}
 
       <Button
         variant="contained"
