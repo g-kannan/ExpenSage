@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
   Box,
   Typography,
   Grid,
@@ -73,25 +72,6 @@ function TableView({ expenses, onReset }) {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {/* Action Buttons */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-        <Button 
-          variant="outlined" 
-          color="error" 
-          onClick={onReset}
-        >
-          Reset Data
-        </Button>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={handleExport}
-          disabled={expenses.length === 0}
-        >
-          Export to CSV
-        </Button>
-      </Box>
-
       {/* Expenses Table */}
       <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
         <Table stickyHeader>

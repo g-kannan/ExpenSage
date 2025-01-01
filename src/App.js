@@ -39,13 +39,24 @@ function App() {
     return number.toLocaleString('en-IN', { maximumFractionDigits: 0 });
   };
 
+  const handleExport = () => {
+    // implement export logic here
+  };
+
   return (
     <Container maxWidth="lg">
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
         <img src={logo} alt="ExpenSage Logo" style={{ height: '136px', width: 'auto' }} />
       </Box>
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: 4, display: 'flex', gap: 2, alignItems: 'center' }}>
         <ExpenseForm onAddExpense={handleAddExpense} />
+        <Button 
+          variant="outlined" 
+          color="error" 
+          onClick={handleReset}
+        >
+          RESET
+        </Button>
       </Box>
       <Box sx={{ mb: 4, display: 'flex', gap: 4 }}>
         <Card sx={{ flex: 1 }}>
@@ -66,6 +77,15 @@ function App() {
             <Typography variant="body1">₹{formatNumber(calculateAvgExpensePerDay())}</Typography>
           </CardContent>
         </Card>
+      </Box>
+      <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleExport}
+        >
+          Export to CSV
+        </Button>
       </Box>
       <ButtonGroup fullWidth variant="contained" color="primary" sx={{ mb: 2 }}>
         <Button onClick={() => handleToggleView('calendar')} variant={view === 'calendar' ? 'contained' : 'outlined'}>Calendar View</Button>
